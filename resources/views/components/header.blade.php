@@ -29,7 +29,7 @@
         @auth
             <li>
                 <a href="#" class="user-nav">
-                    <img src="{{ asset('assets/' . (auth()->user()->avatar ?? 'default-avatar.png')) }}" alt="Avatar" class="profile-user-avatar">
+                    <img src="{{ asset('assets/' . (auth()->user()->avatar ?? 'user.gif')) }}" alt="Avatar" class="profile-user-avatar">
                     {{ auth()->user()->name ?? auth()->user()->email }}</a>
                 <ul>
                     <li><a href="{{ route('profile') }}">Akun Saya</a></li>
