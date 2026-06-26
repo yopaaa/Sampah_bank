@@ -89,7 +89,7 @@
                 <img src="assets/icon/truck.png" alt="truck" class="icon-box">
                 <h3>Untuk Agen</h3>
                 <p>Dapatkan penghasilan tambahan dengan menjadi agen pengangkut. Terima orderan di sekitar lokasimu dan bantu bersihkan kota.</p>
-                <a href="register_admin.php" class="btn btn-outline">Daftar Jadi Agen</a>
+                <a href="{{ route('register.admin') }}" class="btn btn-outline">Daftar Jadi Agen</a>
             </div>
         </span>
     </section>

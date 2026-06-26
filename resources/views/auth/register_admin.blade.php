@@ -7,7 +7,7 @@
     <link rel="icon" type="image/x-icon" href="/assets/icon/truck.ico">
     <link rel="stylesheet" href="/css/index.css">
     <link rel="stylesheet" href="/css/auth.css">
-    <title>Register - Bank Sampah Digital</title>
+    <title>Daftar Agen - Bank Sampah Digital</title>
 </head>
 
 <body>
@@ -19,9 +19,9 @@
     </x-header>
 
     <div class="auth-container">
-        <form class="auth-form" method="POST" action="{{ route('register') }}">
+        <form class="auth-form" method="POST" action="{{ route('register.admin') }}">
             @csrf
-            <h1>Buat Akun Baru</h1>
+            <h1>Daftar Sebagai Agen</h1>
 
             @if ($errors->any())
                 <div class="auth-errors">
@@ -55,7 +55,6 @@
 
             <button type="submit">Daftar Sekarang</button>
 
-            <p class="auth-link">Daftar sebagai agen? <a href="{{ route('register.admin') }}">Daftar di sini</a></p>
             <p class="auth-link">Sudah punya akun? <a href="{{ route('login') }}">Login di sini</a></p>
         </form>
     </div>
