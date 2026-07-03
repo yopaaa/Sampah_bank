@@ -29,4 +29,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function pickupRequests()
+    {
+        return $this->hasMany(PickupRequest::class);
+    }
 }
