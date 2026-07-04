@@ -72,7 +72,54 @@ Route::get('/proses-pickup/{id}', function ($id) {
     return view('dashboard.proses_pickup', compact('pickup'));
 })->middleware('auth')->name('pickup.process');
 
-Route::view('/agen', 'dashboard.agen')->middleware(['auth', 'role:admin'])->name('agen.dashboard');
+Route::post('/proses-pickup', function (\Illuminate\Http\Request $request) {
+    $request->validate([
+        'pickup_id' => 'required|exists:pickup_requests,id',
+        'bukti' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
+    ]);
+
+    $pickupId = $request->input('pickup_id');
+    $pickup = \App\Models\PickupRequest::findOrFail($pickupId);
+
+    if ($request->hasFile('bukti')) {
+        $file = $request->file('bukti');
+        $uploadPath = public_path('assets/bukti_pickup');
+        if (!file_exists($uploadPath)) {
+            mkdir($uploadPath, 0755, true);
+        }
+
+        $filename = "bukti_" . time() . "_" . rand(1000, 9999) . "." . $file->getClientOriginalExtension();
+        $file->move($uploadPath, $filename);
+
+        $pickup->update([
+            'status' => 'selesai',
+            'bukti' => $filename,
+        ]);
+
+        return redirect()->route('agen.dashboard')->with('success', 'Bukti pickup berhasil diunggah!');
+    }
+
+    return back()->withErrors(['bukti' => 'Gagal mengunggah file.']);
+})->middleware(['auth', 'role:admin'])->name('pickup.process.store');
+
+Route::get('/agen', function () {
+    $locations = \App\Models\PickupRequest::with('user')->orderBy('updated_at', 'desc')->get();
+    return view('dashboard.agen', compact('locations'));
+})->middleware(['auth', 'role:admin'])->name('agen.dashboard');
+
+Route::post('/accept-pickup', function (\Illuminate\Http\Request $request) {
+    $pickupId = $request->input('pickup_id');
+    $pickup = \App\Models\PickupRequest::findOrFail($pickupId);
+    
+    $pickup->update([
+        'status' => 'disetujui',
+    ]);
+    
+    return response()->json([
+        'success' => true,
+        'message' => 'Pickup request accepted successfully.'
+    ]);
+})->middleware(['auth', 'role:admin'])->name('pickup.accept');
 // ->name('agen.dashboard')
 
 // memberi nama route agen.dashboard
@@ -81,7 +128,50 @@ Route::view('/agen', 'dashboard.agen')->middleware(['auth', 'role:admin'])->name
 // redirect()->route('agen.dashboard')
 
 
-Route::view('/profile', 'profile')->middleware('auth')->name('profile');
+Route::get('/profile', function () {
+    return view('profile');
+})->middleware('auth')->name('profile');
+
+Route::post('/upload-avatar', function (\Illuminate\Http\Request $request) {
+    $request->validate([
+        'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
+    ]);
+
+    $user = auth()->user();
+
+    if ($request->hasFile('avatar')) {
+        $file = $request->file('avatar');
+        
+        // Hapus file avatar lama jika ada
+        if ($user->avatar && $user->avatar !== 'user.gif' && $user->avatar !== 'images.png') {
+            $oldFilePath = public_path('assets/' . $user->avatar);
+            if (file_exists($oldFilePath)) {
+                @unlink($oldFilePath);
+            }
+        }
+
+        // Simpan avatar baru
+        $filename = 'avatar_' . $user->id . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('assets'), $filename);
+
+        // Update database
+        $user->update([
+            'avatar' => $filename
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Avatar berhasil diperbarui',
+            'filename' => $filename
+        ]);
+    }
+
+    return response()->json([
+        'success' => false,
+        'message' => 'Gagal menyimpan file'
+    ], 400);
+})->middleware('auth')->name('profile.avatar');
+
 Route::get('/logout', function () {
     Auth::logout();
     return redirect()->route('login');
