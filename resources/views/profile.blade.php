@@ -184,7 +184,7 @@
 
     <x-header>
         <x-slot:title>
-            Serahkan Sampahmu Disini
+            Bank Sampah Digital
         </x-slot:title>
     </x-header>
 

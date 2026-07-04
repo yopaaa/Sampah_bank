@@ -32,6 +32,7 @@
                     <img src="{{ asset('assets/' . (auth()->user()->avatar ?? 'user.gif')) }}" alt="Avatar" class="profile-user-avatar">
                     {{ auth()->user()->name ?? auth()->user()->email }}</a>
                 <ul>
+                    <li><a href="{{ route('user.dashboard') }}">Dashboard</a></li>
                     <li><a href="{{ route('profile') }}">Akun Saya</a></li>
                     <li><a href="{{ route('logout') }}">Logout</a></li>
                 </ul>

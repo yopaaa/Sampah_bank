@@ -10,17 +10,19 @@ Route::get('/', function () {
     ]);
 });
 
-Route::view('/login', 'auth.login')->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::middleware('guest')->group(function () {
+    Route::view('/login', 'auth.login')->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
 
-Route::view('/register', 'auth.register')->name('register');
-Route::post('/register', [AuthController::class, 'register']);
+    Route::view('/register', 'auth.register')->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
 
-Route::view('/register/admin', 'auth.register_admin')->name('register.admin');
-Route::post('/register/admin', [AuthController::class, 'registerAdmin']);
+    Route::view('/register/admin', 'auth.register_admin')->name('register.admin');
+    Route::post('/register/admin', [AuthController::class, 'registerAdmin']);
+});
 
 Route::get('/user', function () {
-    $requests = auth()->user()->pickupRequests()->orderBy('created_at', 'desc')->get();
+    $requests = Auth::user()->pickupRequests()->orderBy('created_at', 'desc')->get();
     
     $lat_default = -1.849578;
     $lng_default = 106.1188564;
@@ -47,7 +49,7 @@ Route::post('/request-pickup', function (\Illuminate\Http\Request $request) {
     $final_notes = "Jumlah: $jumlah_plastik kantong | Pesan: $notes_input";
     
     \App\Models\PickupRequest::create([
-        'user_id' => auth()->id(),
+        'user_id' => Auth::id(),
         'notes' => $final_notes,
         'lokasi' => 'bangka',
         'koordinat' => "$lat, $lng",
@@ -62,7 +64,7 @@ Route::post('/request-pickup', function (\Illuminate\Http\Request $request) {
 })->middleware(['auth', 'role:user'])->name('pickup.store');
 
 Route::get('/request-pickup/delete/{id}', function ($id) {
-    $pickup = auth()->user()->pickupRequests()->findOrFail($id);
+    $pickup = Auth::user()->pickupRequests()->findOrFail($id);
     $pickup->delete();
     return redirect()->route('user.dashboard');
 })->middleware(['auth', 'role:user'])->name('pickup.delete');
@@ -137,7 +139,7 @@ Route::post('/upload-avatar', function (\Illuminate\Http\Request $request) {
         'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
     ]);
 
-    $user = auth()->user();
+    $user = Auth::user();
 
     if ($request->hasFile('avatar')) {
         $file = $request->file('avatar');
