@@ -81,7 +81,7 @@
 
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; margin-bottom: 15px;">
                 <h2 class="history-title" style="margin: 0;">Request Selesai</h2>
-                <a href="{{ route('pickup.export') }}" style="display: inline-block; background: #2563eb; color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 13px; transition: background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">📥 Unduh CSV</a>
+                <a href="{{ route('pickup.export') }}" style="display: inline-block; background: #2563eb; color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 13px; transition: background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">Unduh Laporan CSV</a>
             </div>
             <div class="scroll-container" id="completed-requests">
                 <!-- Diisi oleh JavaScript -->
