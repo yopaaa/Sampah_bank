@@ -1,0 +1,80 @@
+.reply-btn:hover {
+    text-decoration: underline;
+}
+
+#map {
+    height: 500px;
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    margin-bottom: 25px;
+}
+
+.info {
+    margin-bottom: 15px;
+}
+
+.profile-marker-avatar {
+    width: 50px;
+    height: 50px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    object-fit: cover;
+    display: block;
+    margin: 0 auto;
+    border: 3px solid #ddd;
+}
+
+.profile-marker-name {
+    display: inline-block;
+    margin-top: 5px;
+    padding: 2px 8px;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+    font-weight: bold;
+    font-size: 12px;
+    font-family: sans-serif;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    white-space: nowrap;
+    text-transform: capitalize;
+}
+
+.profile-marker-container {
+    text-align: center;
+    background: none !important;
+    border: none !important;
+}
+
+.btn-setujui {
+    background: #22c55e;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+    margin-left: 6px;
+}
+
+.btn-setujui:hover {
+    background-color: #16a34a;
+}
+
+.avatar-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-right: 30px;
+}
+
+.avatar {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 5px solid white;
+    background: #eee;
+    object-fit: cover;
+}

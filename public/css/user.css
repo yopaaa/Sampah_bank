@@ -1,4 +1,16 @@
 /* tambahan untuk dashboard user  */
+#blurbg {
+    backdrop-filter: blur(15px);
+}
+.container {
+    max-width: 800px;
+    margin: 30px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
 .card-container {
     background: white;
     border-radius: 12px;
