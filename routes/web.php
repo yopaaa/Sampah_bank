@@ -131,6 +131,7 @@ Route::post('/proses-pickup', function (\Illuminate\Http\Request $request) {
 
     return back()->withErrors(['bukti' => 'Gagal mengunggah file.']);
 })->middleware(['auth', 'role:admin'])->name('pickup.process.store');
+
 Route::get('/agen', function () {
     $locations = \App\Models\PickupRequest::with('user')->orderBy('updated_at', 'desc')->get();
     return view('dashboard.agen', compact('locations'));

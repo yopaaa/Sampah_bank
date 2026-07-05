@@ -132,7 +132,7 @@ function renderHistoryCard(item) {
     const jenisSampahCapitalized = (item.jenis_sampah || 'plastik').charAt(0).toUpperCase() + (item.jenis_sampah || 'plastik').slice(1);
 
     return `
-        <div class="status-card card-item ${item.status}">
+        <div class="status-card card-item ">
             <div class="card-container">
                 <div class="card-header">
                     <span class="date-text">${formattedDate}</span>

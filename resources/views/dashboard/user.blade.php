@@ -49,8 +49,14 @@
             </div>
 
             <div style="margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+             <span>
+                <span style="font-weight: 600; color: #64748b;">Saldo:</span>
+                <span style="font-size: 20px; font-weight: bold; color: black;">Rp {{ number_format(auth()->user()->saldo, 0, ',', '.') }}</span>
+            </span>  
+            <span>
                 <span style="font-weight: 600; color: #64748b;">Estimasi Penggunaan Saldo:</span>
-                <span id="price_display" style="font-size: 20px; font-weight: bold; color: black;">Rp 5.000</span>
+                <span id="price_display" style="font-size: 20px; font-weight: bold; color: #22c55e;">Rp 5.000</span>
+            </span>    
             </div>
             <br>
 

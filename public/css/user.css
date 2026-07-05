@@ -15,7 +15,7 @@
     background: white;
     border-radius: 12px;
     padding: 24px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    box-shadow: 2px 4px 6px 6px rgba(0,0,0,0.05);
     margin-bottom: 20px;
 }
 .form-group {
@@ -72,8 +72,8 @@
    Styles imported from admin.style.css
    ======================================= */
 .status-card {
-  background-color: #fff9db;
-  border-left: 5px solid #ffee00;
+  /* background-color: #fff9db; */
+  /* border-left: 5px solid #ffee00; */
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 25px;

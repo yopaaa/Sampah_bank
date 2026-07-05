@@ -159,7 +159,7 @@ function renderCard(item) {
     }
 
     return `
-        <div class="status-card card-item ${item.status}">
+        <div class="status-card card-item">
             <span class="avatar-wrapper"><img class="avatar" src="/assets/${avatar}" alt="${name}"></span>
             <span class="card-container">
                 <div class="card-header">
