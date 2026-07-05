@@ -222,3 +222,70 @@ Route::get('/logout', function () {
     Auth::logout();
     return redirect()->route('login');
 })->name('logout');
+
+Route::get('/export-csv', function () {
+    $user = Auth::user();
+    
+    if ($user->role === 'admin') {
+        // Agen mengekspor request selesai yang ditangani oleh dirinya sendiri
+        $pickups = \App\Models\PickupRequest::with('user')
+            ->where('agent_id', $user->id)
+            ->where('status', 'selesai')
+            ->orderBy('updated_at', 'desc')
+            ->get();
+    } else {
+        // Warga mengekspor request selesai miliknya sendiri
+        $pickups = $user->pickupRequests()
+            ->with('agent')
+            ->where('status', 'selesai')
+            ->orderBy('updated_at', 'desc')
+            ->get();
+    }
+
+    $filename = "laporan_pickup_" . $user->username . "_" . date('Ymd_His') . ".csv";
+    
+    $headers = [
+        "Content-type"        => "text/csv; charset=UTF-8",
+        "Content-Disposition" => "attachment; filename=$filename",
+        "Pragma"              => "no-cache",
+        "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+        "Expires"             => "0"
+    ];
+
+    $columns = ['ID Request', 'Tanggal Permintaan', 'Tanggal Selesai', 'Pihak Terkait', 'Jenis Sampah', 'Jumlah (Kantong)', 'Nilai Saldo (Rupiah)', 'Lokasi', 'Koordinat', 'Catatan'];
+
+    $callback = function() use($pickups, $columns, $user) {
+        $file = fopen('php://output', 'w');
+        
+        // UTF-8 BOM agar terbaca rapi di Excel
+        fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+        
+        fputcsv($file, $columns, ';'); 
+
+        foreach ($pickups as $pickup) {
+            $pihakTerkait = '';
+            if ($user->role === 'admin') {
+                $pihakTerkait = $pickup->user ? $pickup->user->name : 'Warga';
+            } else {
+                $pihakTerkait = $pickup->agent ? $pickup->agent->name : 'Belum ditangani';
+            }
+
+            fputcsv($file, [
+                $pickup->id,
+                $pickup->created_at->format('Y-m-d H:i:s'),
+                $pickup->updated_at ? $pickup->updated_at->format('Y-m-d H:i:s') : '-',
+                $pihakTerkait,
+                ucfirst($pickup->jenis_sampah),
+                $pickup->jumlah_plastik,
+                $pickup->total_harga,
+                $pickup->lokasi,
+                $pickup->koordinat,
+                $pickup->notes
+            ], ';');
+        }
+
+        fclose($file);
+    };
+
+    return response()->stream($callback, 200, $headers);
+})->middleware('auth')->name('pickup.export');
