@@ -29,10 +29,33 @@ function updateForm(latlng) {
     marker.bindPopup("Lokasi Penjemputan").openPopup();
 }
 
+const hargaList = {
+    'plastik': 5000,
+    'kertas': 4000,
+    'logam': 10000,
+    'makanan': 2000
+};
+
+function calculatePrice() {
+    const jumlahInput = document.getElementById('jumlah_plastik');
+    const jenisSelect = document.getElementById('jenis_sampah');
+    const priceDisplay = document.getElementById('price_display');
+
+    if (jumlahInput && jenisSelect && priceDisplay) {
+        const jumlah = parseInt(jumlahInput.value) || 0;
+        const jenis = jenisSelect.value;
+        const hargaPerKantong = hargaList[jenis] || 5000;
+        const total = hargaPerKantong * jumlah;
+
+        priceDisplay.textContent = 'Rp ' + total.toLocaleString('id-ID');
+    }
+}
+
 function saveLocation() {
     const lat = document.getElementById('lat').value;
     const lng = document.getElementById('lng').value;
     const jumlah_plastik = document.getElementById('jumlah_plastik').value;
+    const jenis_sampah = document.getElementById('jenis_sampah').value;
     const notes = document.getElementById('notes').value;
 
     if (!lat || !lng) {
@@ -41,7 +64,7 @@ function saveLocation() {
     }
 
     if (!jumlah_plastik) {
-        alert("Isi jumlah dan jenis plastik!");
+        alert("Isi jumlah kantong!");
         return;
     }
 
@@ -49,6 +72,7 @@ function saveLocation() {
     formData.append('latitude', lat);
     formData.append('longitude', lng);
     formData.append('jumlah_plastik', jumlah_plastik);
+    formData.append('jenis_sampah', jenis_sampah);
     formData.append('notes', notes);
     formData.append('_token', window.dashboardUserConfig.csrfToken);
 
@@ -104,6 +128,9 @@ function renderHistoryCard(item) {
         status_selesai = `<br><strong>Tanggal Selesai:</strong> ${formattedDate_updated}`;
     }
 
+    const totalHargaFormated = 'Rp ' + (item.total_harga || 0).toLocaleString('id-ID');
+    const jenisSampahCapitalized = (item.jenis_sampah || 'plastik').charAt(0).toUpperCase() + (item.jenis_sampah || 'plastik').slice(1);
+
     return `
         <div class="status-card card-item ${item.status}">
             <div class="card-container">
@@ -115,7 +142,9 @@ function renderHistoryCard(item) {
                     </div>
                 </div>
                 <p class="note-text">
-                    <strong>Jumlah Plastik:</strong> ${item.jumlah_plastik} kantong<br>
+                    <strong>Jenis Sampah:</strong> ${jenisSampahCapitalized}<br>
+                    <strong>Jumlah:</strong> ${item.jumlah_plastik} kantong<br>
+                    <strong>Estimasi Saldo:</strong> <span style="color:#22c55e; font-weight:bold;">${totalHargaFormated}</span><br>
                     <strong>Lokasi:</strong> ${item.lokasi}<br>
                     <strong>Catatan:</strong> ${item.notes}
                     ${status_selesai}
@@ -162,3 +191,4 @@ if (completedContainer) {
 }
 
 enablePicker();
+calculatePrice();

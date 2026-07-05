@@ -42,18 +42,42 @@ Route::get('/user', function () {
 Route::post('/request-pickup', function (\Illuminate\Http\Request $request) {
     $lat = $request->input('latitude') ?? '';
     $lng = $request->input('longitude') ?? '';
-    $jumlah_plastik = $request->input('jumlah_plastik') ?? 1;
+    $jumlah_plastik = (int) ($request->input('jumlah_plastik') ?? 1);
+    $jenis_sampah = $request->input('jenis_sampah') ?? 'plastik';
     $notes_input = $request->input('notes') ?? '';
     
-    // Format catatan dengan informasi plastik
-    $final_notes = "Jumlah: $jumlah_plastik kantong | Pesan: $notes_input";
+    // Daftar harga per kantong berdasarkan jenis sampah
+    $harga_list = [
+        'plastik' => 5000,
+        'kertas' => 4000,
+        'logam' => 10000,
+        'makanan' => 2000,
+    ];
+    $harga_per_kantong = $harga_list[$jenis_sampah] ?? 5000;
+    $total_harga = $harga_per_kantong * $jumlah_plastik;
+
+    $user = Auth::user();
+    if ($user->saldo < $total_harga) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Saldo Anda tidak mencukupi (Kurang Rp ' . number_format($total_harga - $user->saldo, 0, ',', '.') . '). Silakan lakukan top up di halaman profil.'
+        ]);
+    }
+
+    // Kurangi saldo warga
+    $user->decrement('saldo', $total_harga);
+
+    // Format catatan dengan informasi plastik dan jenis sampah
+    $final_notes = "Jenis: " . ucfirst($jenis_sampah) . " | Jumlah: $jumlah_plastik kantong | Pesan: $notes_input";
     
     \App\Models\PickupRequest::create([
-        'user_id' => Auth::id(),
+        'user_id' => $user->id,
         'notes' => $final_notes,
         'lokasi' => 'bangka',
         'koordinat' => "$lat, $lng",
         'jumlah_plastik' => $jumlah_plastik,
+        'jenis_sampah' => $jenis_sampah,
+        'total_harga' => $total_harga,
         'status' => 'menunggu',
     ]);
     
@@ -73,7 +97,6 @@ Route::get('/proses-pickup/{id}', function ($id) {
     $pickup = \App\Models\PickupRequest::findOrFail($id);
     return view('dashboard.proses_pickup', compact('pickup'));
 })->middleware('auth')->name('pickup.process');
-
 Route::post('/proses-pickup', function (\Illuminate\Http\Request $request) {
     $request->validate([
         'pickup_id' => 'required|exists:pickup_requests,id',
@@ -98,12 +121,16 @@ Route::post('/proses-pickup', function (\Illuminate\Http\Request $request) {
             'bukti' => $filename,
         ]);
 
+        // Tambah saldo ke agen yang memproses
+        if ($pickup->agent) {
+            $pickup->agent->increment('saldo', $pickup->total_harga);
+        }
+
         return redirect()->route('agen.dashboard')->with('success', 'Bukti pickup berhasil diunggah!');
     }
 
     return back()->withErrors(['bukti' => 'Gagal mengunggah file.']);
 })->middleware(['auth', 'role:admin'])->name('pickup.process.store');
-
 Route::get('/agen', function () {
     $locations = \App\Models\PickupRequest::with('user')->orderBy('updated_at', 'desc')->get();
     return view('dashboard.agen', compact('locations'));
@@ -115,6 +142,7 @@ Route::post('/accept-pickup', function (\Illuminate\Http\Request $request) {
     
     $pickup->update([
         'status' => 'disetujui',
+        'agent_id' => Auth::id(), // simpan agen yang memproses pickup
     ]);
     
     return response()->json([
@@ -173,6 +201,21 @@ Route::post('/upload-avatar', function (\Illuminate\Http\Request $request) {
         'message' => 'Gagal menyimpan file'
     ], 400);
 })->middleware('auth')->name('profile.avatar');
+
+Route::post('/profile/topup', function (\Illuminate\Http\Request $request) {
+    $request->validate([
+        'amount' => 'required|integer|min:10000|max:10000000',
+    ]);
+    
+    $user = Auth::user();
+    $user->increment('saldo', $request->input('amount'));
+    
+    return response()->json([
+        'success' => true,
+        'message' => 'Top up saldo sebesar Rp ' . number_format($request->input('amount'), 0, ',', '.') . ' berhasil!',
+        'new_saldo' => number_format($user->saldo, 0, ',', '.')
+    ]);
+})->middleware('auth')->name('profile.topup');
 
 Route::get('/logout', function () {
     Auth::logout();

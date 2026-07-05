@@ -21,6 +21,12 @@
         </x-header>
 
         <div class="container">
+            <!-- Tampilan Saldo Agen -->
+            <div style=" color: white; padding: 15px 25px; border-radius: 12px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 600; font-size: 16px; color: black;">Dompet Saldo Agen:</span>
+                <span style="font-size: 22px; font-weight: 800; color: black;">Rp {{ number_format(auth()->user()->saldo, 0, ',', '.') }}</span>
+            </div>
+
             <div class="info">
                 <h2>Peta Lokasi Permintaan Pickup</h2>
                 <p>Klik penanda (marker) untuk melihat informasi tempat.</p>

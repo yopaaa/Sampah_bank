@@ -9,16 +9,24 @@ class PickupRequest extends Model
 {
     protected $fillable = [
         'user_id',
+        'agent_id',
         'notes',
         'lokasi',
         'koordinat',
         'status',
         'bukti',
-        'jumlah_plastik'
+        'jumlah_plastik',
+        'jenis_sampah',
+        'total_harga'
     ];
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function agent(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'agent_id');
     }
 }

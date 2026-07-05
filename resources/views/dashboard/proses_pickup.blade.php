@@ -55,11 +55,23 @@
                             <span>{{ $pickup->created_at->format('d M Y H:i') }}</span>
                         </div>
                         <div class="detail-item">
-                            <label>Catatan</label>
+                            <label>Jenis Sampah</label>
+                            <span style="text-transform: capitalize;">{{ $pickup->jenis_sampah }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Jumlah Kantong</label>
+                            <span>{{ $pickup->jumlah_plastik }} kantong</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Nilai Saldo</label>
+                            <span style=" font-weight:bold;">Rp {{ number_format($pickup->total_harga, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="detail-item" style="grid-column: span 2;">
+                            <label>Catatan / Pesan</label>
                             <span>{{ $pickup->notes }}</span>
                         </div>
                         @if ($pickup->status === 'selesai' && $pickup->updated_at)
-                            <div class="detail-item">
+                            <div class="detail-item" style="grid-column: span 2;">
                                 <label>Waktu Selesai</label>
                                 <span>{{ $pickup->updated_at->format('d M Y H:i') }}</span>
                             </div>

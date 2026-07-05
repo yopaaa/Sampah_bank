@@ -32,9 +32,27 @@
             <div class="form-row">
                 <div class="form-group new-request-group">
                     <label for="jumlah_plastik" style="display: block; margin-bottom: 5px; font-weight: 600;">Jumlah Kantong Plastik</label>
-                    <input value="1" type="number" id="jumlah_plastik" name="jumlah_plastik" min="1" placeholder="Contoh: 5" required class="form-control">
+                    <input value="1" type="number" id="jumlah_plastik" name="jumlah_plastik" min="1" placeholder="Contoh: 5" required class="form-control" oninput="calculatePrice()">
                 </div>
             </div>
+
+            <div class="form-row" style="margin-top: 15px;">
+                <div class="form-group new-request-group">
+                    <label for="jenis_sampah" style="display: block; margin-bottom: 5px; font-weight: 600;">Jenis Sampah</label>
+                    <select id="jenis_sampah" name="jenis_sampah" class="form-control" onchange="calculatePrice()">
+                        <option value="plastik">Plastik (Rp 5.000 / kantong)</option>
+                        <option value="kertas">Kertas (Rp 4.000 / kantong)</option>
+                        <option value="logam">Logam (Rp 10.000 / kantong)</option>
+                        <option value="makanan">Makanan / Organik (Rp 2.000 / kantong)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 600; color: #64748b;">Estimasi Penggunaan Saldo:</span>
+                <span id="price_display" style="font-size: 20px; font-weight: bold; color: black;">Rp 5.000</span>
+            </div>
+            <br>
 
             <div class="form-group new-request-group">
                 <label for="notes" style="display: block; margin-bottom: 5px; font-weight: 600;">Catatan Tambahan</label>

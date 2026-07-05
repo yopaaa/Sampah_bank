@@ -45,6 +45,9 @@ filteredData.forEach(function(item) {
             icon: customIcon
         }).addTo(map);
 
+        var totalHargaFormated = 'Rp ' + (item.total_harga || 0).toLocaleString('id-ID');
+        var jenisSampahCapitalized = (item.jenis_sampah || 'plastik').charAt(0).toUpperCase() + (item.jenis_sampah || 'plastik').slice(1);
+
         var popupButtonText = item.status === 'menunggu' ? 'Setujui' : 'Pickup Sekarang';
         var popupButtonColor = item.status === 'menunggu' ? '#22c55e' : '#ffee00';
         var popupTextColor = item.status === 'menunggu' ? '#ffffff' : '#333';
@@ -54,7 +57,10 @@ filteredData.forEach(function(item) {
         var popupContent = `
             <div style="text-align:center; min-width:150px;">
                 <strong style="text-transform:capitalize; font-size:16px;">${name}</strong><br>
-                <p style="font-size:12px; color:#666; margin: 5px 0;">${item.notes}</p>
+                <p style="font-size:12px; color:#666; margin: 5px 0;">
+                    <strong>Jenis:</strong> ${jenisSampahCapitalized}<br>
+                    <strong>Pendapatan:</strong> <span style="color:#22c55e; font-weight:bold;">${totalHargaFormated}</span>
+                </p>
                 <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
                 <a href="${popupUrl}" 
                    onclick="${popupOnclick}"
@@ -120,6 +126,8 @@ function renderCard(item) {
 
     const name = item.user ? item.user.name : 'Warga';
     const avatar = item.user && item.user.avatar ? item.user.avatar : 'user.gif';
+    const totalHargaFormated = 'Rp ' + (item.total_harga || 0).toLocaleString('id-ID');
+    const jenisSampahCapitalized = (item.jenis_sampah || 'plastik').charAt(0).toUpperCase() + (item.jenis_sampah || 'plastik').slice(1);
 
     let actionButton = '';
     if (item.status === 'selesai') {
@@ -160,9 +168,11 @@ function renderCard(item) {
                 </div>
                 <p class="note-text">
                 <h2 style="text-transform: capitalize; margin: 5px 0;">${name}</h2>
+                <strong>Jenis Sampah:</strong> ${jenisSampahCapitalized}<br>
+                <strong>Jumlah:</strong> ${item.jumlah_plastik} kantong<br>
+                <strong>Pendapatan Saldo:</strong> <span style="color:#22c55e; font-weight:bold;">${totalHargaFormated}</span><br>
                 <strong>Lokasi:</strong> ${item.lokasi}<br>
                 <strong>Koordinat:</strong> ${item.koordinat}<br>
-                <strong>Jumlah Plastik:</strong> ${item.jumlah_plastik} kantong<br>
                 <strong>Catatan:</strong> ${item.notes}
                 ${status_selesai}
                 </p>

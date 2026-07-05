@@ -93,3 +93,84 @@ function showStatus(message, type) {
         }
     }
 }
+
+// Modal Top Up Logic
+const topupModal = document.getElementById('topupModal');
+const topupAmountInput = document.getElementById('topupAmount');
+const saldoDisplay = document.getElementById('saldoDisplay');
+
+function openTopupModal() {
+    if (topupModal) {
+        topupModal.style.display = 'block';
+        if (topupAmountInput) {
+            topupAmountInput.value = '';
+        }
+        // Reset active state on nominal buttons
+        document.querySelectorAll('.nominal-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+    }
+}
+
+function closeTopupModal() {
+    if (topupModal) {
+        topupModal.style.display = 'none';
+    }
+}
+
+// Close modal when click outside of modal-content
+window.addEventListener('click', function(event) {
+    if (event.target === topupModal) {
+        closeTopupModal();
+    }
+});
+
+function selectNominal(amount, btnElement) {
+    if (topupAmountInput) {
+        topupAmountInput.value = amount;
+    }
+    // Remove active class from other buttons
+    document.querySelectorAll('.nominal-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    // Add active class to clicked button
+    if (btnElement) {
+        btnElement.classList.add('active');
+    }
+}
+
+function submitTopup() {
+    if (!topupAmountInput) return;
+
+    const amount = parseInt(topupAmountInput.value);
+
+    if (isNaN(amount) || amount < 10000) {
+        alert('Minimal nominal top up adalah Rp 10.000');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('amount', amount);
+    formData.append('_token', window.profileConfig.csrfToken);
+
+    fetch(window.profileConfig.topupUrl, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                if (saldoDisplay) {
+                    saldoDisplay.textContent = 'Rp ' + data.new_saldo;
+                }
+                closeTopupModal();
+            } else {
+                alert('Gagal: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat memproses top up.');
+        });
+}
