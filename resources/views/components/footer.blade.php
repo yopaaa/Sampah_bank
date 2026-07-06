@@ -39,7 +39,7 @@
             <br>
             Muhammad Rizky Alvarezi Nasiub (1062549)
             <br>
-            Nabil Muhadzab(1062550)
+            Oktorio Mahmud Ozy Saputra(1062551)
         </p>
     </div>
 </footer>
