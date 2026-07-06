@@ -61,7 +61,7 @@
         // Set dynamic config from Laravel Blade to be used by public/js/dashboard_agen.js
         window.dashboardAgenConfig = {
             locations: @json($locations),
-            acceptUrl: '{{ route("pickup.accept") }}',
+            acceptUrl: '/accept-pickup',
             csrfToken: '{{ csrf_token() }}'
         };
     </script>

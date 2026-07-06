@@ -97,7 +97,7 @@
         window.dashboardUserConfig = {
             latDefault: {{ $lat_default }},
             lngDefault: {{ $lng_default }},
-            storeUrl: '{{ route("pickup.store") }}',
+            storeUrl: '/request-pickup',
             csrfToken: '{{ csrf_token() }}',
             requests: @json($requests)
         };

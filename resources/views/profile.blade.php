@@ -106,8 +106,8 @@
     <script>
         // Set dynamic config from Laravel Blade to be used by public/js/profile.js
         window.profileConfig = {
-            uploadUrl: '{{ route("profile.avatar") }}',
-            topupUrl: '{{ route("profile.topup") }}',
+            uploadUrl: '/upload-avatar',
+            topupUrl: '/profile/topup',
             csrfToken: '{{ csrf_token() }}'
         };
     </script>
