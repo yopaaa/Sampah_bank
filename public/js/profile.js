@@ -143,9 +143,10 @@ function submitTopup() {
     if (!topupAmountInput) return;
 
     const amount = parseInt(topupAmountInput.value);
+    const isAdmin = window.profileConfig.role === 'admin';
 
     if (isNaN(amount) || amount < 10000) {
-        alert('Minimal nominal top up adalah Rp 10.000');
+        alert(isAdmin ? 'Minimal nominal pencairan saldo adalah Rp 10.000' : 'Minimal nominal top up adalah Rp 10.000');
         return;
     }
 
@@ -171,6 +172,6 @@ function submitTopup() {
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Terjadi kesalahan saat memproses top up.');
+            alert(isAdmin ? 'Terjadi kesalahan saat memproses pencairan saldo.' : 'Terjadi kesalahan saat memproses top up.');
         });
 }

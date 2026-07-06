@@ -209,13 +209,30 @@ Route::post('/profile/topup', function (\Illuminate\Http\Request $request) {
     ]);
     
     $user = Auth::user();
-    $user->increment('saldo', $request->input('amount'));
     
-    return response()->json([
-        'success' => true,
-        'message' => 'Top up saldo sebesar Rp ' . number_format($request->input('amount'), 0, ',', '.') . ' berhasil!',
-        'new_saldo' => number_format($user->saldo, 0, ',', '.')
-    ]);
+    if ($user->role === 'admin') {
+        if ($user->saldo < $request->input('amount')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Saldo tidak mencukupi untuk dicairkan!'
+            ], 400);
+        }
+        $user->decrement('saldo', $request->input('amount'));
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Pencairan saldo sebesar Rp ' . number_format($request->input('amount'), 0, ',', '.') . ' berhasil!',
+            'new_saldo' => number_format($user->saldo, 0, ',', '.')
+        ]);
+    } else {
+        $user->increment('saldo', $request->input('amount'));
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Top up saldo sebesar Rp ' . number_format($request->input('amount'), 0, ',', '.') . ' berhasil!',
+            'new_saldo' => number_format($user->saldo, 0, ',', '.')
+        ]);
+    }
 })->middleware('auth')->name('profile.topup');
 
 Route::get('/logout', function () {

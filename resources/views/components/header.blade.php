@@ -28,7 +28,7 @@
         </li>
         @auth
             <li>
-                <a href="/{{ auth()->user()->role }}" class="user-nav">
+                <a href="{{ route('user.dashboard') }}" class="user-nav">
                     <img src="{{ asset('assets/' . (auth()->user()->avatar ?? 'user.gif')) }}" alt="Avatar" class="profile-user-avatar">
                     {{ auth()->user()->name ?? auth()->user()->email }}</a>
                 <ul>

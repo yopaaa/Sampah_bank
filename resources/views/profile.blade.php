@@ -42,7 +42,11 @@
                     <h2 id="saldoDisplay" style="margin: 5px 0 0; font-size: 24px; font-weight: 800;">Rp {{ number_format(auth()->user()->saldo, 0, ',', '.') }}</h2>
                 </div>
                 <div>
-                    <button onclick="openTopupModal()" class="btn-edit" style="margin-top: 0;">Top Up</button>
+                    @if (auth()->user()->role === 'admin')
+                        <button onclick="openTopupModal()" class="btn-edit" style="margin-top: 0;">Cairkan Saldo</button>
+                    @else
+                        <button onclick="openTopupModal()" class="btn-edit" style="margin-top: 0;">Top Up</button>
+                    @endif
                 </div>
             </div>
 
@@ -81,9 +85,13 @@
     <div id="topupModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeTopupModal()">&times;</span>
-            <h3>Top Up Saldo</h3>
-            
-            <p style="font-size: 13px; color: #64748b; margin-top: -10px; margin-bottom: 15px;">Pilih nominal instan atau ketik nominal sendiri.</p>
+            @if (auth()->user()->role === 'admin')
+                <h3>Cairkan Saldo</h3>
+                <p style="font-size: 13px; color: #64748b; margin-top: -10px; margin-bottom: 15px;">Pilih nominal instan atau ketik nominal sendiri untuk dicairkan.</p>
+            @else
+                <h3>Top Up Saldo</h3>
+                <p style="font-size: 13px; color: #64748b; margin-top: -10px; margin-bottom: 15px;">Pilih nominal instan atau ketik nominal sendiri.</p>
+            @endif
 
             <div class="nominal-options">
                 <button type="button" class="nominal-btn" onclick="selectNominal(10000, this)">Rp 10k</button>
@@ -97,7 +105,11 @@
             <label for="topupAmount" style="font-size: 12px; font-weight: bold; color: #64748b; text-transform: uppercase;">Nominal Custom (Min Rp 10.000)</label>
             <input type="number" id="topupAmount" class="modal-input" placeholder="Contoh: 150000" min="10000">
 
-            <button onclick="submitTopup()" class="btn-edit" style="width: 100%; margin-top: 10px;">Konfirmasi Top Up</button>
+            @if (auth()->user()->role === 'admin')
+                <button onclick="submitTopup()" class="btn-edit" style="width: 100%; margin-top: 10px;">Konfirmasi Cairkan Saldo</button>
+            @else
+                <button onclick="submitTopup()" class="btn-edit" style="width: 100%; margin-top: 10px;">Konfirmasi Top Up</button>
+            @endif
         </div>
     </div>
 
@@ -108,7 +120,8 @@
         window.profileConfig = {
             uploadUrl: '/upload-avatar',
             topupUrl: '/profile/topup',
-            csrfToken: '{{ csrf_token() }}'
+            csrfToken: '{{ csrf_token() }}',
+            role: '{{ auth()->user()->role }}'
         };
     </script>
     <script src="/js/profile.js"></script>
